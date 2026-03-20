@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.egg-info/
+.git/
+.env
+frontend/  # 백엔드 이미지에는 프론트엔드 코드가 필요 없으므로 제외
+tests/     # 실행 이미지에는 테스트 코드가 필요 없으므로 제외
