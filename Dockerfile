@@ -2,25 +2,20 @@
 FROM python:3.11-slim AS builder
 WORKDIR /app
 
-# 1. 설정 파일 먼저 복사 (캐시 활용을 위해)
+# 1. 설정 파일 복사
 COPY pyproject.toml .
 
-# 2. 소스 코드 전체 복사 
-# (.dockerignore에 적은 파일들은 자동으로 제외됩니다)
+# 2. [핵심] 모든 소스 코드를 먼저 복사해줍니다.
 COPY . .
 
-# 3. 패키지 설치
+# 3. 그 다음 설치 (이제 api, db 폴더를 찾을 수 있습니다)
 RUN pip install --no-cache-dir .
 
 # --- Runtime stage ---
 FROM python:3.11-slim
 WORKDIR /app
-
-# 빌드 스테이지에서 설치된 패키지만 가져오기
 COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
-
-# 실제 실행에 필요한 파일들 복사
 COPY . .
 
 ENV SERVICE=api
